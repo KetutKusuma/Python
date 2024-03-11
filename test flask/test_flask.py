@@ -47,8 +47,9 @@ def create_employee():
     employee['id'] = nextEmployeeId
     nextEmployeeId += 1
     employees.append(employee)
-
-    return '', 201, {'location': f'/employees/{employee["id"]}'}
+    print("wow : ", employee)
+    return response_success(201, employee)
+    # return '', 201, {'location': f'/employees/{employee["id"]}'}
 
 
 @app.route("/employees/<int:id>", methods=['PUT'])
@@ -78,4 +79,4 @@ def delete_employee(id: int):
 
 
 if __name__ == '__main__':
-    app.run(port=5000)
+    app.run(port=5000, debug=True)

@@ -2,7 +2,10 @@ from flask import jsonify
 
 
 def response_success(status: int, data):
-    data = ({'code': status, 'message': 'success', 'data': data})
+    message = "Success"
+    if status == 201:
+        message = 'Success create'
+    data = ({'code': status, 'message': message, 'data': data})
     return jsonify(data), status
 
 
