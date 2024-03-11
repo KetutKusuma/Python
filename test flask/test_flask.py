@@ -1,5 +1,6 @@
 import json
 from flask import Flask, jsonify, request
+from response_custom import response_error, response_success
 
 app = Flask(__name__)
 
@@ -9,8 +10,8 @@ nextEmployeeId = 4
 
 @app.route('/employees', methods=['GET'])
 def get_employees():
-    data = {'code': 200, 'data': employees}
-    return jsonify(data)
+    data = response_success(200, employees)
+    return data
 
 
 def get_employee(id):
@@ -19,10 +20,14 @@ def get_employee(id):
 
 @app.route('/employees/<int:id>', methods=['GET'])
 def get_employee_by_id(id: int):
+    print("id : ", id)
     employee = get_employee(id)
+    print("em : ", employee)
     if employee is None:
-        return jsonify({'error': 'Employee does not exist'}), 404
-    return jsonify(employee), 200
+        dataErr = response_error(404, 'Employee does not exist')
+        return dataErr
+        # return jsonify({'error': 'Employee does not exist'}), 404
+    return response_success(200, employee)
 
 
 def employee_is_valid(employee):
