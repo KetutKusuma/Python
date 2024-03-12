@@ -40,25 +40,28 @@ def employee_is_valid(employee):
 @app.route('/employees', methods=['POST'])
 def create_employee():
     global nextEmployeeId
-    employee = json.loads(request.data)
+    employee = json.loads(request.data)  # ini nerima ketika raw
+    # request.form -> untuk form
+    # request.
     if not employee_is_valid(employee):
         return jsonify({'error': "Invalid employee properties"}), 400
 
     employee['id'] = nextEmployeeId
     nextEmployeeId += 1
     employees.append(employee)
-    print("wow : ", employee)
     return response_success(201, employee)
     # return '', 201, {'location': f'/employees/{employee["id"]}'}
 
 
 @app.route("/employees/<int:id>", methods=['PUT'])
 def update_employee(id: int):
+    get = request.get_json()
+    print("yeya : ", get['data'])
     employee = get_employee(id)
     if employee is None:
         return jsonify({'error': 'Employee does not exist.'}), 404
 
-    updated_employee = json.loads(request.data)  # ambil data dari request
+    updated_employee = json.loads(request.form)  # ambil data dari request
     if not employee_is_valid(updated_employee):
         return jsonify({'error': 'Invalid employee properties'}), 400
 
@@ -72,10 +75,19 @@ def delete_employee(id: int):
     global employees
     employee = get_employee(id)
     if employee is None:
-        return jsonify({'error': 'Employee does not exist'}), 404
+        return response_error(404, 'Employee does not exist')
 
     employees = [e for e in employees if e['id'] != id]
-    return jsonify(employee), 200
+    return response_success(201, employee, msg="delete")
+
+
+@app.route('/file', methods=['POST'])
+def get_file():
+    file = request.files['file']
+    print("file : ", file.filename)
+    txt = request.form['text']
+    print("text : ", txt)
+    return jsonify({"code": 200, "message": "sukses upload"}), 200
 
 
 if __name__ == '__main__':
